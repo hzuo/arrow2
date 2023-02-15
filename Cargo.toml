@@ -63,7 +63,7 @@ hex = { version = "^0.4", optional = true }
 
 # for IPC compression
 lz4 = { version = "1.23.1", optional = true }
-zstd = { version = "0.11", optional = true }
+zstd = { version = "0.12", default-features = false, optional = true }
 
 rand = { version = "0.8", optional = true }
 
@@ -97,20 +97,20 @@ multiversion = { version = "0.6.1", optional = true }
 # For support for odbc
 odbc-api = { version = "0.36", optional = true }
 
-# faster hashing
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-ahash = { version = "0.8", features=["compile-time-rng"] }
-getrandom = { version = "0.2", features = ["js"] }
-
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-ahash = { version = "0.8", features=["runtime-rng"] }
+# Faster hashing
+ahash = "0.8"
 
 # parquet support
 [dependencies.parquet2]
-version = "0.17"
+git = "https://github.com/jorgecarleitao/parquet2"
+rev = "ed0e1ffb3a673f9f79ffc0e0b114e3d9f30144d7"
 optional = true
 default_features = false
 features = ["async"]
+
+[patch.crates-io.zstd]
+git = "https://github.com/hzuo/zstd-rs/"
+rev = "cc7610c1f5b25d21a35ffb27e3b383ed8c2b6747"
 
 [dev-dependencies]
 criterion = "0.3"
