@@ -63,7 +63,7 @@ hex = { version = "^0.4", optional = true }
 
 # for IPC compression
 lz4 = { version = "1.23.1", optional = true }
-zstd = { version = "0.11", optional = true }
+zstd = { version = "0.12", default-features = false, optional = true }
 
 rand = { version = "0.8", optional = true }
 
@@ -100,15 +100,25 @@ odbc-api = { version = "0.36", optional = true }
 # Faster hashing
 ahash = "0.8"
 
-[target.wasm32-unknown-unknown.dependencies]
-getrandom = { version = "0.2", features = ["js"] }
-
 # parquet support
 [dependencies.parquet2]
-version = "0.17"
+git = "https://github.com/jorgecarleitao/parquet2"
+rev = "ed0e1ffb3a673f9f79ffc0e0b114e3d9f30144d7"
 optional = true
 default_features = false
 features = ["async"]
+
+# Patch to get this unreleased fix: https://github.com/gyscos/zstd-rs/pull/209
+[patch.crates-io.zstd]
+git = "https://github.com/hzuo/zstd-rs/"
+rev = "cc7610c1f5b25d21a35ffb27e3b383ed8c2b6747"
+
+# Patch to get this unreleased fix: https://github.com/rust-random/getrandom/pull/307
+# We need this because we build with `-sFILESYSTEM=0` and the previous implementation before that PR
+# involved reading `/dev/urandom`.
+[patch.crates-io.getrandom]
+git = "https://github.com/rust-random/getrandom"
+rev = "7c83ea0e576dad4b74d382424aed2148ded9da1b"
 
 [dev-dependencies]
 criterion = "0.3"
