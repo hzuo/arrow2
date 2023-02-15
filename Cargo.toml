@@ -108,10 +108,14 @@ optional = true
 default_features = false
 features = ["async"]
 
+# Patch to get this unreleased fix: https://github.com/gyscos/zstd-rs/pull/209
 [patch.crates-io.zstd]
 git = "https://github.com/hzuo/zstd-rs/"
 rev = "cc7610c1f5b25d21a35ffb27e3b383ed8c2b6747"
 
+# Patch to get this unreleased fix: https://github.com/rust-random/getrandom/pull/307
+# We need this because we build with `-sFILESYSTEM=0` and the previous implementation before that PR
+# involved reading `/dev/urandom`.
 [patch.crates-io.getrandom]
 git = "https://github.com/rust-random/getrandom"
 rev = "7c83ea0e576dad4b74d382424aed2148ded9da1b"
