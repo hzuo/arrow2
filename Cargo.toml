@@ -112,6 +112,10 @@ features = ["async"]
 git = "https://github.com/hzuo/zstd-rs/"
 rev = "cc7610c1f5b25d21a35ffb27e3b383ed8c2b6747"
 
+[patch.crates-io.getrandom]
+git = "https://github.com/rust-random/getrandom"
+rev = "7c83ea0e576dad4b74d382424aed2148ded9da1b"
+
 [dev-dependencies]
 criterion = "0.3"
 flate2 = "1"
