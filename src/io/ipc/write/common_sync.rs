@@ -6,7 +6,7 @@ use super::super::CONTINUATION_MARKER;
 use super::common::pad_to_64;
 use super::common::EncodedData;
 
-const PADDING: [u8; 64] = [0; 64];
+pub(crate) const PADDING: [u8; 64] = [0; 64];
 
 /// Write a message's IPC data and buffers, returning metadata and buffer data lengths written
 pub fn write_message<W: Write>(writer: &mut W, encoded: &EncodedData) -> Result<(usize, usize)> {
@@ -27,7 +27,7 @@ pub fn write_message<W: Write>(writer: &mut W, encoded: &EncodedData) -> Result<
     }
     // write padding
     let padding: &[u8] = &PADDING[..padding_bytes];
-    writer.write_all(padding);
+    writer.write_all(padding)?;
 
     // write arrow data
     let body_len = if arrow_data_len > 0 {
@@ -48,7 +48,7 @@ fn write_body_buffers<W: Write>(mut writer: W, data: &[u8]) -> Result<usize> {
     writer.write_all(data)?;
     if pad_len > 0 {
         let padding: &[u8] = &PADDING[..pad_len];
-        writer.write_all(padding);
+        writer.write_all(padding)?;
     }
 
     Ok(total_len)
