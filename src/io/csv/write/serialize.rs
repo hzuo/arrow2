@@ -451,18 +451,36 @@ pub fn new_serializer<'a>(
             DataType::LargeUtf8 => match *keys_dt {
                 IntegerType::UInt32 => serialize_utf8_dict::<u32, i64>(array.as_any()),
                 IntegerType::UInt64 => serialize_utf8_dict::<u64, i64>(array.as_any()),
-                _ => todo!(),
+                _ => {
+                    return Err(crate::error::Error::NotYetImplemented(format!(
+                        "dictionary not yet supported by csv writer - keys dt {:?} - values dt {:?}",
+                        keys_dt, values_dt
+                    )));
+                }
             },
             DataType::Utf8 => match *keys_dt {
                 IntegerType::UInt32 => serialize_utf8_dict::<u32, i32>(array.as_any()),
                 IntegerType::UInt64 => serialize_utf8_dict::<u64, i32>(array.as_any()),
-                _ => todo!(),
+                _ => {
+                    return Err(crate::error::Error::NotYetImplemented(format!(
+                        "dictionary not yet supported by csv writer - keys dt {:?} - values dt {:?}",
+                        keys_dt, values_dt
+                    )));
+                }
             },
             _ => {
-                panic!("only dictionary with string values are supported by csv writer")
+                return Err(crate::error::Error::NotYetImplemented(format!(
+                    "dictionary not yet supported by csv writer - keys dt {:?} - values dt {:?}",
+                    keys_dt, values_dt
+                )));
             }
         },
-        dt => panic!("data type: {dt:?} not supported by csv writer"),
+        dt => {
+            return Err(crate::error::Error::NotYetImplemented(format!(
+                "data type not yet supported by csv writer - {:?}",
+                dt
+            )));
+        }
     })
 }
 
