@@ -47,7 +47,7 @@ fn get_buffer<'a, T: NativeType>(
 
     // validate alignment
     let v: &[T] = bytemuck::try_cast_slice(values)
-        .map_err(|_| Error::OutOfSpec("buffer not aligned for mmap".to_string()))?;
+        .map_err(|error| Error::OutOfSpec(format!("buffer not aligned for mmap - {:?}", error)))?;
 
     if v.len() < num_rows {
         return Err(Error::OutOfSpec(

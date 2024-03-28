@@ -6,11 +6,13 @@ use super::super::CONTINUATION_MARKER;
 use super::common::pad_to_64;
 use super::common::EncodedData;
 
+pub(crate) const PADDING: [u8; 64] = [0; 64];
+
 /// Write a message's IPC data and buffers, returning metadata and buffer data lengths written
 pub fn write_message<W: Write>(writer: &mut W, encoded: &EncodedData) -> Result<(usize, usize)> {
     let arrow_data_len = encoded.arrow_data.len();
 
-    let a = 8 - 1;
+    let a = 64 - 1;
     let buffer = &encoded.ipc_message;
     let flatbuf_size = buffer.len();
     let prefix_size = 8;
@@ -24,9 +26,8 @@ pub fn write_message<W: Write>(writer: &mut W, encoded: &EncodedData) -> Result<
         writer.write_all(buffer)?;
     }
     // write padding
-    // aligned to a 8 byte boundary, so maximum is [u8;8]
-    const PADDING_MAX: [u8; 8] = [0u8; 8];
-    writer.write_all(&PADDING_MAX[..padding_bytes])?;
+    let padding: &[u8] = &PADDING[..padding_bytes];
+    writer.write_all(padding)?;
 
     // write arrow data
     let body_len = if arrow_data_len > 0 {
@@ -46,7 +47,8 @@ fn write_body_buffers<W: Write>(mut writer: W, data: &[u8]) -> Result<usize> {
     // write body buffer
     writer.write_all(data)?;
     if pad_len > 0 {
-        writer.write_all(&vec![0u8; pad_len][..])?;
+        let padding: &[u8] = &PADDING[..pad_len];
+        writer.write_all(padding)?;
     }
 
     Ok(total_len)

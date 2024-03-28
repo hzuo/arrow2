@@ -6,15 +6,15 @@ use super::{
     super::IpcField,
     super::ARROW_MAGIC_V2,
     common::{DictionaryTracker, EncodedData, WriteOptions},
-    common_sync::{write_continuation, write_message},
+    common_sync::{write_continuation, write_message, PADDING},
     default_ipc_fields, schema, schema_to_bytes,
 };
 
-use crate::array::Array;
 use crate::chunk::Chunk;
 use crate::datatypes::*;
 use crate::error::{Error, Result};
 use crate::io::ipc::write::common::encode_chunk_amortized;
+use crate::{array::Array, io::ipc::write::common::pad_to_64};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum State {
@@ -113,10 +113,15 @@ impl<W: Write> FileWriter<W> {
         if self.state != State::None {
             return Err(Error::oos("The IPC file can only be started once"));
         }
+
+        // NOTE(hzuo): If we don't at least align to 16 bytes here,
+        // then any Int128Array blocks will not be aligned.
+        const PADDING_FOR_MAGIC: usize = pad_to_64(ARROW_MAGIC_V2.len());
+
         // write magic to header
-        self.writer.write_all(&ARROW_MAGIC_V2[..])?;
-        // create an 8-byte boundary after the header
-        self.writer.write_all(&[0, 0])?;
+        self.writer.write_all(&ARROW_MAGIC_V2)?;
+        // create a 64-byte boundary after the header
+        self.writer.write_all(&PADDING[..PADDING_FOR_MAGIC])?;
         // write the schema, set the written bytes to the schema
 
         let encoded_message = EncodedData {
@@ -125,7 +130,7 @@ impl<W: Write> FileWriter<W> {
         };
 
         let (meta, data) = write_message(&mut self.writer, &encoded_message)?;
-        self.block_offsets += meta + data + 8; // 8 <=> arrow magic + 2 bytes for alignment
+        self.block_offsets += meta + data + 64; // 64 <=> 6 bytes of arrow magic + 58 bytes for alignment
         self.state = State::Started;
         Ok(())
     }
