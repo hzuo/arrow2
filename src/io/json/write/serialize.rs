@@ -474,7 +474,19 @@ pub(crate) fn new_serializer<'a>(
             )
         }
         DataType::Null => null_serializer(array.len(), offset, take),
-        other => todo!("Writing {:?} to JSON", other),
+        // TODO(hzuo): Handle these types
+        DataType::Float16 => null_serializer(array.len(), offset, take),
+        DataType::Time32(_) => null_serializer(array.len(), offset, take),
+        DataType::Time64(_) => null_serializer(array.len(), offset, take),
+        DataType::Interval(_) => null_serializer(array.len(), offset, take),
+        DataType::Binary => null_serializer(array.len(), offset, take),
+        DataType::FixedSizeBinary(_) => null_serializer(array.len(), offset, take),
+        DataType::LargeBinary => null_serializer(array.len(), offset, take),
+        DataType::Union(_, _, _) => null_serializer(array.len(), offset, take),
+        DataType::Map(_, _) => null_serializer(array.len(), offset, take),
+        DataType::Decimal(_, _) => null_serializer(array.len(), offset, take),
+        DataType::Decimal256(_, _) => null_serializer(array.len(), offset, take),
+        DataType::Extension(_, _, _) => unreachable!(),
     }
 }
 
