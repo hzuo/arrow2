@@ -5,16 +5,16 @@ use arrow_format::ipc::planus::Builder;
 use super::{
     super::IpcField,
     super::ARROW_MAGIC_V2,
-    common::{DictionaryTracker, EncodedData, WriteOptions},
-    common_sync::{write_continuation, write_message, PADDING},
+    common::{pad_to_64, DictionaryTracker, EncodedData, WriteOptions, PADDING},
+    common_sync::{write_continuation, write_message},
     default_ipc_fields, schema, schema_to_bytes,
 };
 
+use crate::array::Array;
 use crate::chunk::Chunk;
 use crate::datatypes::*;
 use crate::error::{Error, Result};
 use crate::io::ipc::write::common::encode_chunk_amortized;
-use crate::{array::Array, io::ipc::write::common::pad_to_64};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum State {

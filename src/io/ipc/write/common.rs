@@ -274,7 +274,7 @@ fn chunk_to_bytes_amortized(
     let mut builder = Builder::new();
     let ipc_message = builder.finish(&message, None);
     encoded_message.ipc_message = ipc_message.to_vec();
-    encoded_message.arrow_data = arrow_data
+    encoded_message.arrow_data = arrow_data;
 }
 
 /// Write dictionary values into two sets of bytes, one for the header (ipc::Schema::Message) and the
@@ -389,6 +389,8 @@ pub struct EncodedData {
     /// Arrow buffers to be written, should be an empty vec for schema messages
     pub arrow_data: Vec<u8>,
 }
+
+pub(crate) const PADDING: [u8; 64] = [0; 64];
 
 /// Calculate a 64-byte boundary and return the number of bytes needed to pad to 64 bytes
 #[inline]

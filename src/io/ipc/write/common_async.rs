@@ -4,8 +4,7 @@ use futures::AsyncWriteExt;
 use crate::error::Result;
 
 use super::super::CONTINUATION_MARKER;
-use super::common::pad_to_64;
-use super::common::EncodedData;
+use super::common::{pad_to_64, EncodedData, PADDING};
 
 /// Write a message's IPC data and buffers, returning metadata and buffer data lengths written
 pub async fn write_message<W: AsyncWrite + Unpin + Send>(
@@ -62,7 +61,7 @@ async fn write_body_buffers<W: AsyncWrite + Unpin + Send>(
     // write body buffer
     writer.write_all(data).await?;
     if pad_len > 0 {
-        writer.write_all(&vec![0u8; pad_len][..]).await?;
+        writer.write_all(&PADDING[..pad_len]).await?;
     }
 
     Ok(total_len)
