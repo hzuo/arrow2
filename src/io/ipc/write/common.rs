@@ -274,7 +274,7 @@ fn chunk_to_bytes_amortized(
     let mut builder = Builder::new();
     let ipc_message = builder.finish(&message, None);
     encoded_message.ipc_message = ipc_message.to_vec();
-    encoded_message.arrow_data = arrow_data
+    encoded_message.arrow_data = arrow_data;
 }
 
 /// Write dictionary values into two sets of bytes, one for the header (ipc::Schema::Message) and the
