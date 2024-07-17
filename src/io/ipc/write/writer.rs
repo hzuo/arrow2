@@ -95,6 +95,10 @@ impl<W: Write> FileWriter<W> {
         self.writer
     }
 
+    pub fn inner_ref(&self) -> &W {
+        &self.writer
+    }
+
     /// Get the inner memory scratches so they can be reused in a new writer.
     /// This can be utilized to save memory allocations for performance reasons.
     pub fn get_scratches(&mut self) -> EncodedData {
