@@ -390,6 +390,8 @@ pub struct EncodedData {
     pub arrow_data: Vec<u8>,
 }
 
+pub(crate) const PADDING: [u8; 64] = [0; 64];
+
 /// Calculate a 64-byte boundary and return the number of bytes needed to pad to 64 bytes
 #[inline]
 pub(crate) const fn pad_to_64(len: usize) -> usize {

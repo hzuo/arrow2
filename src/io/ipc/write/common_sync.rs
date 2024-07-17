@@ -3,8 +3,7 @@ use std::io::Write;
 use crate::error::Result;
 
 use super::super::CONTINUATION_MARKER;
-use super::common::pad_to_64;
-use super::common::EncodedData;
+use super::common::{pad_to_64, EncodedData, PADDING};
 
 pub(crate) const PADDING: [u8; 64] = [0; 64];
 

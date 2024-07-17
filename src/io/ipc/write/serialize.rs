@@ -12,7 +12,7 @@ use crate::{
 
 use super::super::compression;
 use super::super::endianess::is_native_little_endian;
-use super::common::{pad_to_64, Compression};
+use super::common::{pad_to_64, Compression, PADDING};
 
 fn write_primitive<T: NativeType>(
     array: &PrimitiveArray<T>,
@@ -572,7 +572,7 @@ pub fn write(
 #[inline]
 fn pad_buffer_to_64(buffer: &mut Vec<u8>, length: usize) {
     let pad_len = pad_to_64(length);
-    buffer.extend_from_slice(&vec![0u8; pad_len]);
+    buffer.extend_from_slice(&PADDING[..pad_len]);
 }
 
 /// writes `bytes` to `arrow_data` updating `buffers` and `offset` and guaranteeing a 8 byte boundary.
