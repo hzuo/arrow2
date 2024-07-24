@@ -95,6 +95,7 @@ impl<W: Write> FileWriter<W> {
         self.writer
     }
 
+    /// Get a reference to the inner writer
     pub fn inner_ref(&self) -> &W {
         &self.writer
     }
