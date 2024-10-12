@@ -46,8 +46,9 @@ use super::Bitmap;
 /// This container is internally a [`Vec<u8>`].
 #[derive(Clone)]
 pub struct MutableBitmap {
+    /// The underlying buffer
     pub buffer: Vec<u8>,
-    // invariant: length.saturating_add(7) / 8 == buffer.len();
+    /// Invariant: length.saturating_add(7) / 8 == buffer.len();
     pub length: usize,
 }
 
